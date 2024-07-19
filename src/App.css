@@ -1,169 +1,163 @@
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;700&family=Orbitron:wght@400;700&family=Chakra+Petch:wght@300;400;700&display=swap');
 
-* {
-  box-sizing: border-box;
+body {
   margin: 0;
   padding: 0;
-}
-
-body {
-  font-family: 'Rajdhani', sans-serif;
-  background-color: #000;
+  background-color: #0a0a1a;
   color: #a0a0a0;
-  line-height: 1.6;
+  font-family: 'Rajdhani', sans-serif;
 }
 
 .App {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 header {
-  background-color: #101010;
-  padding: 1.5rem;
   text-align: center;
+  padding: 20px 0;
   border-bottom: 2px solid #3030a0;
 }
 
 h1 {
+  margin: 0;
+  color: #4040ff;
   font-family: 'Orbitron', sans-serif;
   font-size: 2.5rem;
-  color: #3030a0;
   text-transform: uppercase;
   letter-spacing: 3px;
-}
-
-main {
-  flex-grow: 1;
-  padding: 2rem;
-  background: linear-gradient(to bottom, #000, #101020);
+  text-shadow: 0 0 10px rgba(64, 64, 255, 0.5);
 }
 
 .content {
   display: flex;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  gap: 20px;
+  margin-top: 20px;
 }
 
 .left-panel {
-  flex: 2;
+  flex: 3;
 }
 
 .right-panel {
   flex: 1;
 }
 
-h2 {
-  font-family: 'Chakra Petch', sans-serif;
-  color: #4040b0;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-}
-
-.genre-selector h2 {
-  color: #3030a0;
-}
-
 .genre-buttons {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.genre-buttons button, .random-button {
-  font-family: 'Rajdhani', sans-serif;
-  background-color: #202030;
+.genre-buttons button {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px;
+  background-color: #1a1a2a;
   border: 1px solid #3030a0;
   color: #a0a0a0;
-  padding: 0.75rem;
   cursor: pointer;
-  transition: all 0.3s;
-  font-weight: bold;
+  transition: all 0.3s ease;
+  font-family: 'Chakra Petch', sans-serif;
   text-transform: uppercase;
 }
 
-.genre-buttons button:hover, .random-button:hover {
+.genre-buttons button:hover {
   background-color: #3030a0;
-  color: #fff;
+  color: #ffffff;
 }
 
-.random-button {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  background-color: #303050;
+.station-list-container, .favorites-list {
+  background-color: #1a1a2a;
+  border: 1px solid #3030a0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(48, 48, 160, 0.3);
+}
+
+.station-list, .favorites-list ul {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.station-list::-webkit-scrollbar, 
+.favorites-list ul::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.station-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #3030a0;
+  transition: background-color 0.3s ease;
+}
+
+.station-item:hover {
+  background-color: #2a2a3a;
+}
+
+.station-favicon {
+  width: 40px;
+  height: 40px;
+  margin-right: 15px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid #3030a0;
+}
+
+.station-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.station-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #c0c0c0;
+}
+
+.station-country {
+  font-size: 0.9em;
+  color: #808080;
 }
 
 .station-player {
-  background-color: #101020;
-  padding: 1.5rem;
+  background-color: #1a1a2a;
   border: 1px solid #3030a0;
-}
-
-.station-player h2 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.5rem;
-  color: #4040b0;
-}
-
-.station-info, .play-status {
-  margin: 0.75rem 0;
-  color: #a0a0a0;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(48, 48, 160, 0.3);
 }
 
 .audio-player {
-  width: 100%;
-  height: 60px;
-  margin: 1rem 0;
-  background-color: #202030;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  border: 1px solid #3030a0;
-}
-
-.play-button {
-  font-family: 'Chakra Petch', sans-serif;
-  background-color: #3030a0;
-  border: none;
-  color: #fff;
-  width: 80px;
-  height: 40px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
-  z-index: 10;
-}
-
-.play-button:hover {
-  background-color: #4040b0;
-}
-
-.play-button:disabled {
-  background-color: #404040;
-  cursor: not-allowed;
+  margin: 20px 0;
 }
 
 .volume-control {
   display: flex;
   align-items: center;
-  margin-top: 1rem;
+  gap: 10px;
 }
 
 .volume-slider {
   -webkit-appearance: none;
   width: 100%;
   height: 5px;
-  background: #202030;
+  border-radius: 5px;
+  background: #3030a0;
   outline: none;
   opacity: 0.7;
-  transition: opacity 0.2s;
+  transition: opacity .2s;
 }
 
 .volume-slider:hover {
@@ -175,123 +169,43 @@ h2 {
   appearance: none;
   width: 15px;
   height: 15px;
-  background: #3030a0;
+  border-radius: 50%;
+  background: #4040ff;
   cursor: pointer;
 }
 
 .volume-slider::-moz-range-thumb {
   width: 15px;
   height: 15px;
-  background: #3030a0;
+  border-radius: 50%;
+  background: #4040ff;
   cursor: pointer;
-}
-
-.volume-label {
-  margin-left: 10px;
-  color: #a0a0a0;
-  font-weight: bold;
 }
 
 .favorite-buttons {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 10px;
+  margin-top: 20px;
 }
 
 .favorite-buttons button {
   flex: 1;
-  font-family: 'Rajdhani', sans-serif;
-  background-color: #202030;
+  padding: 10px;
+  background-color: #2a2a3a;
   border: 1px solid #3030a0;
   color: #a0a0a0;
-  padding: 0.75rem;
   cursor: pointer;
-  transition: all 0.3s;
-  font-weight: bold;
+  transition: all 0.3s ease;
+  font-family: 'Chakra Petch', sans-serif;
   text-transform: uppercase;
 }
 
 .favorite-buttons button:hover {
   background-color: #3030a0;
-  color: #fff;
+  color: #ffffff;
 }
 
-.favorite-buttons button:disabled {
-  background-color: #303030;
-  border-color: #404040;
-  color: #505050;
-  cursor: not-allowed;
-}
-
-.favorites-list, .popular-stations, .station-list {
-  background-color: #101020;
-  padding: 1.5rem;
-  border: 1px solid #3030a0;
-  margin-bottom: 2rem;
-}
-
-.favorites-list h2, .popular-stations h2, .station-list h2 {
-  color: #4040b0;
-}
-
-.favorites-list ul, .popular-stations ul, .station-list ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.favorites-list li, .popular-stations li, .station-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #202030;
-  padding: 0.75rem;
-  margin-bottom: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 1px solid #3030a0;
-}
-
-.favorites-list li:hover, .popular-stations li:hover, .station-list li:hover {
-  background-color: #303050;
-}
-
-.station-favicon {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  margin-right: 1rem;
-  border: 1px solid #3030a0;
-}
-
-.station-info h3 {
-  margin: 0;
-  color: #a0a0a0;
-  font-size: 1rem;
-  font-family: 'Chakra Petch', sans-serif;
-}
-
-.station-info p {
-  margin: 0.25rem 0 0;
-  color: #808080;
-  font-size: 0.8rem;
-}
-
-.loading, .error {
-  text-align: center;
-  padding: 1rem;
-  background-color: #101020;
-  border: 1px solid #3030a0;
-  margin-top: 1rem;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 0.9rem;
-}
-
-.error {
-  color: #a04040;
-  border-color: #a04040;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .content {
     flex-direction: column;
   }
@@ -299,4 +213,172 @@ h2 {
   .left-panel, .right-panel {
     flex: 1;
   }
+}
+
+.play-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #3030a0;
+  border: none;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(48, 48, 160, 0.5);
+}
+
+.play-button:hover {
+  background-color: #4040ff;
+  transform: scale(1.05);
+}
+
+.play-button:active {
+  transform: scale(0.95);
+}
+
+.popular-stations {
+  background-color: #1a1a2a;
+  border: 1px solid #3030a0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(48, 48, 160, 0.3);
+}
+
+.popular-stations h2 {
+  padding: 15px;
+  margin: 0;
+  background-color: #2a2a3a;
+  color: #4040ff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.2em;
+  text-transform: uppercase;
+}
+
+.popular-stations ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popular-stations li {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #3030a0;
+  transition: background-color 0.3s ease;
+}
+
+.popular-stations li:last-child {
+  border-bottom: none;
+}
+
+.popular-stations li:hover {
+  background-color: #2a2a3a;
+}
+
+.popular-stations .station-favicon {
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #3030a0;
+}
+
+.popular-stations .station-info {
+  flex: 1;
+}
+
+.popular-stations .station-name {
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 1.1em;
+  color: #c0c0c0;
+  margin-bottom: 5px;
+}
+
+.popular-stations .station-country {
+  font-size: 0.9em;
+  color: #808080;
+}
+
+.next-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #2a2a3a;
+  border: 1px solid #3030a0;
+  color: #a0a0a0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Chakra Petch', sans-serif;
+  text-transform: uppercase;
+}
+
+.next-button:hover {
+  background-color: #3030a0;
+  color: #ffffff;
+}
+
+.player-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+
+
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-button,
+.play-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #3030a0;
+  border: none;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(48, 48, 160, 0.5);
+}
+
+.control-button {
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+}
+
+.control-button:hover,
+.play-button:hover {
+  background-color: #4040ff;
+  transform: scale(1.05);
+}
+
+.control-button:active,
+.play-button:active {
+  transform: scale(0.95);
+}
+
+.control-button:disabled,
+.play-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.play-button {
+  font-size: 28px;
 }

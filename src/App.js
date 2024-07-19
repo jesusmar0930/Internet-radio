@@ -13,6 +13,8 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStationId, setCurrentStationId] = useState(null);
+  const [currentStationIndex, setCurrentStationIndex] = useState(0);
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem('favorites');
     return savedFavorites ? JSON.parse(savedFavorites) : [];
@@ -48,10 +50,11 @@ function App() {
     }
   }, [genre, fetchStations]);
 
-  const selectStation = (selectedStation) => {
+  const selectStation = useCallback((selectedStation) => {
     setStation(selectedStation);
+    setCurrentStationId(selectedStation.id);
     setIsPlaying(true);
-  };
+  }, []);
 
   const addToFavorites = useCallback(() => {
     if (station) {
@@ -75,6 +78,22 @@ function App() {
       );
     }
   }, [station]);
+
+  const moveToNextStation = useCallback(() => {
+    if (stationList.length > 0) {
+      const nextIndex = (currentStationIndex + 1) % stationList.length;
+      setCurrentStationIndex(nextIndex);
+      selectStation(stationList[nextIndex]);
+    }
+  }, [currentStationIndex, stationList, selectStation]);
+  
+  const moveToPreviousStation = useCallback(() => {
+    if (stationList.length > 0) {
+      const previousIndex = (currentStationIndex - 1 + stationList.length) % stationList.length;
+      setCurrentStationIndex(previousIndex);
+      selectStation(stationList[previousIndex]);
+    }
+  }, [currentStationIndex, stationList, selectStation]);
 
   const playFavorite = (favoriteStation) => {
     setStation(favoriteStation);
@@ -104,15 +123,18 @@ function App() {
               <StationList stations={stationList} onSelectStation={selectStation} />
             )}
             {station && (
-              <StationPlayer 
-                station={station} 
-                isPlaying={isPlaying} 
-                setIsPlaying={setIsPlaying} 
-                addToFavorites={addToFavorites}
-                removeFromFavorites={removeFromFavorites}
-                isFavorite={isFavorite()}
-              />
-            )}
+        <StationPlayer 
+          key={currentStationId}  // Add this line
+          station={station} 
+          isPlaying={isPlaying} 
+          setIsPlaying={setIsPlaying} 
+          addToFavorites={addToFavorites}
+          removeFromFavorites={removeFromFavorites}
+          onNextStation={moveToNextStation}
+          onPreviousStation={moveToPreviousStation}
+          isFavorite={isFavorite()}
+        />
+      )}
           </div>
           <div className="right-panel">
             <PopularStations onStationSelect={selectStation} />

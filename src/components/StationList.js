@@ -2,19 +2,19 @@ import React from 'react';
 
 function StationList({ stations, onSelectStation }) {
   return (
-    <div className="station-list">
+    <div className="station-list-container">
       <h2>Stations</h2>
-      <ul>
+      <div className="station-list">
         {stations.map(station => (
-          <li key={station.id} onClick={() => onSelectStation(station)}>
+          <div key={station.id} className="station-item" onClick={() => onSelectStation(station)}>
             {station.favicon && <img src={station.favicon} alt={station.name} className="station-favicon" />}
             <div className="station-info">
               <h3>{station.name}</h3>
               <p>{station.country}</p>
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, removeFromFavorites, isFavorite }) {
+function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, removeFromFavorites, isFavorite, onNextStation, onPreviousStation}) {
   const audioRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [volume, setVolume] = useState(1);
@@ -13,31 +13,41 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
   }, [volume]);
 
   useEffect(() => {
-    if (isPlaying) {
-      audioRef.current.play().catch(e => {
-        console.error("Error playing audio:", e);
-        setError("Unable to play this station. Please try another.");
-        setIsPlaying(false);
-      });
-    } else {
-      audioRef.current.pause();
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.src = station.url_resolved;
+      setIsLoading(true);
+      setError(null);
+
+      const playAudio = async () => {
+        try {
+          if (isPlaying) {
+            await audioElement.play();
+          } else {
+            audioElement.pause();
+          }
+        } catch (e) {
+          console.error("Error playing audio:", e);
+          setError("Unable to play this station. Please try another.");
+          setIsPlaying(false);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      playAudio();
     }
-  }, [isPlaying, setIsPlaying]);
+
+    return () => {
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.src = '';
+      }
+    };
+  }, [station, isPlaying, setIsPlaying]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
-  };
-
-  const handleCanPlay = () => {
-    setIsLoading(false);
-    setError(null);
-  };
-
-  const handleError = (e) => {
-    console.error("Audio error:", e);
-    setError("Error loading audio. Please try another station.");
-    setIsLoading(false);
-    setIsPlaying(false);
   };
 
   const handleVolumeChange = (e) => {
@@ -55,15 +65,18 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
         <p><strong>Bitrate:</strong> {station.bitrate} kbps</p>
       </div>
       <div className="audio-player">
-        <audio 
-          ref={audioRef}
-          src={station.url_resolved} 
-          onCanPlay={handleCanPlay}
-          onError={handleError}
-        />
-        <button className="play-button" onClick={togglePlay} disabled={isLoading}>
-          {isLoading ? 'Loading...' : isPlaying ? 'Pause' : 'Play'}
-        </button>
+        <audio ref={audioRef} />
+        <div className="player-controls">
+          <button className="control-button" onClick={onPreviousStation} disabled={isLoading}>
+            ⏮
+          </button>
+          <button className="play-button" onClick={togglePlay} disabled={isLoading}>
+            {isLoading ? '...' : isPlaying ? '❚❚' : '▶'}
+          </button>
+          <button className="control-button" onClick={onNextStation} disabled={isLoading}>
+            ⏭
+          </button>
+        </div>
       </div>
       {error && <p className="error-message">{error}</p>}
       <div className="volume-control">
