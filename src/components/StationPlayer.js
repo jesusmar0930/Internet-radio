@@ -1,6 +1,7 @@
+// StationPlayer.js
 import React, { useState, useRef, useEffect } from 'react';
 
-function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, removeFromFavorites, isFavorite, onNextStation, onPreviousStation}) {
+function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, removeFromFavorites, isFavorite, onNextStation, onPreviousStation }) {
   const audioRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
   const [volume, setVolume] = useState(1);

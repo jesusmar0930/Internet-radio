@@ -4,6 +4,8 @@ import FavoritesList from './components/FavoritesList';
 import GenreSelector from './components/GenreSelector';
 import StationList from './components/StationList';
 import PopularStations from './components/PopularStations';
+import SearchBar from './components/SearchBar'; 
+
 import './App.css';
 
 const API_BASE = 'https://de1.api.radio-browser.info/json';
@@ -21,6 +23,15 @@ function App() {
   });
   const [genre, setGenre] = useState('');
   const [stationList, setStationList] = useState([]);
+  const [searchResults, setSearchResults] = useState([]); 
+
+  const filterPlayableStations = useCallback((stations) => {
+    return stations.filter(station => 
+      station.url_resolved && 
+      station.url_resolved.startsWith('http') &&
+      station.codec
+    );
+  }, []);
 
   const fetchStations = useCallback(async (selectedGenre) => {
     setIsLoading(true);
@@ -35,20 +46,17 @@ function App() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const stations = await response.json();
-      setStationList(stations);
+      const playableStations = filterPlayableStations(stations);
+      setStationList(playableStations);
     } catch (error) {
       console.error('Error fetching stations:', error);
       setError('Failed to fetch stations. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [filterPlayableStations]);
 
-  useEffect(() => {
-    if (genre) {
-      fetchStations(genre);
-    }
-  }, [genre, fetchStations]);
+ 
 
   const selectStation = useCallback((selectedStation) => {
     setStation(selectedStation);
@@ -108,6 +116,35 @@ function App() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }, [favorites]);
 
+  const handleSearch = useCallback(async (searchTerm) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const url = `${API_BASE}/stations/search?limit=30&order=clickcount&reverse=true&language=english&name=${encodeURIComponent(searchTerm)}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const stations = await response.json();
+      const playableStations = filterPlayableStations(stations);
+      setSearchResults(playableStations);
+      setStationList(playableStations);
+    } catch (error) {
+      console.error('Error searching stations:', error);
+      setError('Failed to search stations. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [filterPlayableStations]);
+
+  // Modify the useEffect for fetchStations to clear search results when changing genres
+  useEffect(() => {
+    if (genre) {
+      fetchStations(genre);
+      setSearchResults([]); // Clear search results when changing genres
+    }
+  }, [genre, fetchStations]);
+
   return (
     <div className="App">
       <header>
@@ -116,6 +153,7 @@ function App() {
       <main>
         <div className="content">
           <div className="left-panel">
+            <SearchBar onSearch={handleSearch} /> {/* Add the SearchBar component */}
             <GenreSelector setGenre={setGenre} />
             {isLoading && <p className="loading">Loading stations...</p>}
             {error && <p className="error">{error}</p>}
@@ -123,18 +161,18 @@ function App() {
               <StationList stations={stationList} onSelectStation={selectStation} />
             )}
             {station && (
-        <StationPlayer 
-          key={currentStationId}  // Add this line
-          station={station} 
-          isPlaying={isPlaying} 
-          setIsPlaying={setIsPlaying} 
-          addToFavorites={addToFavorites}
-          removeFromFavorites={removeFromFavorites}
-          onNextStation={moveToNextStation}
-          onPreviousStation={moveToPreviousStation}
-          isFavorite={isFavorite()}
-        />
-      )}
+              <StationPlayer 
+                key={currentStationId}
+                station={station} 
+                isPlaying={isPlaying} 
+                setIsPlaying={setIsPlaying} 
+                addToFavorites={addToFavorites}
+                removeFromFavorites={removeFromFavorites}
+                onNextStation={moveToNextStation}
+                onPreviousStation={moveToPreviousStation}
+                isFavorite={isFavorite()}
+              />
+            )}
           </div>
           <div className="right-panel">
             <PopularStations onStationSelect={selectStation} />

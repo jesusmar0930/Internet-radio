@@ -382,3 +382,35 @@ h1 {
 .play-button {
   font-size: 28px;
 }
+
+
+/* Add this to your App.css file */
+.search-bar {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #3030a0;
+  background-color: #1a1a2a;
+  color: #a0a0a0;
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+.search-bar button {
+  padding: 10px 20px;
+  background-color: #3030a0;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Chakra Petch', sans-serif;
+  text-transform: uppercase;
+}
+
+.search-bar button:hover {
+  background-color: #4040ff;
+}
