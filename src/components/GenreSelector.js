@@ -17,7 +17,7 @@ function GenreSelector({ setGenre }) {
         ))}
       </div>
     </div>
-  );
+  );  
 }
 
 export default GenreSelector;

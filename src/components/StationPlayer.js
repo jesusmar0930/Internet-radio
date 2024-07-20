@@ -56,6 +56,16 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
     setVolume(newVolume);
   };
 
+  const handleAddToFavorites = () => {
+    console.log('Add to favorites clicked for station:', station);
+    addToFavorites(station);
+  };
+
+  const handleRemoveFromFavorites = () => {
+    console.log('Remove from favorites clicked for station:', station);
+    removeFromFavorites(station);
+  };
+
   return (
     <div className="station-player">
       <h2>{station.name}</h2>
@@ -94,13 +104,21 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
       </div>
       <p className="play-status">{isPlaying ? 'Now Playing' : 'Paused'}</p>
       <div className="favorite-buttons">
-        <button onClick={addToFavorites} disabled={isFavorite}>
-          Add to Favorites
-        </button>
-        <button onClick={removeFromFavorites} disabled={!isFavorite}>
-          Remove from Favorites
-        </button>
-      </div>
+  <button 
+    onClick={handleAddToFavorites} 
+    disabled={isFavorite}
+    className="add-favorite"
+  >
+    Add to Favorites
+  </button>
+  <button 
+    onClick={handleRemoveFromFavorites} 
+    disabled={!isFavorite}
+    className="remove-favorite"
+  >
+    Remove from Favorites
+  </button>
+</div>
     </div>
   );
 }
