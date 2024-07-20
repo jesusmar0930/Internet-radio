@@ -103,17 +103,25 @@ function App() {
     if (stationList.length > 0) {
       const nextIndex = (currentStationIndex + 1) % stationList.length;
       setCurrentStationIndex(nextIndex);
-      selectStation(stationList[nextIndex]);
+      const nextStation = stationList[nextIndex];
+      setStation(nextStation);
+      setCurrentStationId(nextStation.stationuuid);
+      setIsPlaying(false);
+      setTimeout(() => setIsPlaying(true), 100);
     }
-  }, [currentStationIndex, stationList, selectStation]);
+  }, [currentStationIndex, stationList]);
   
   const moveToPreviousStation = useCallback(() => {
     if (stationList.length > 0) {
       const previousIndex = (currentStationIndex - 1 + stationList.length) % stationList.length;
       setCurrentStationIndex(previousIndex);
-      selectStation(stationList[previousIndex]);
+      const previousStation = stationList[previousIndex];
+      setStation(previousStation);
+      setCurrentStationId(previousStation.stationuuid);
+      setIsPlaying(false);
+      setTimeout(() => setIsPlaying(true), 100);
     }
-  }, [currentStationIndex, stationList, selectStation]);
+  }, [currentStationIndex, stationList]);
 
   const playFavorite = (favoriteStation) => {
     setStation(favoriteStation);
@@ -172,11 +180,7 @@ function App() {
           </div>
           <div className="right-panel">
             <PopularStations onStationSelect={selectStation} />
-<FavoritesList 
-  favorites={favorites} 
-  playFavorite={playFavorite} 
-  removeFromFavorites={removeFromFavorites}
-/>
+            <FavoritesList favorites={favorites} playFavorite={playFavorite} />
           </div>
         </div>
       </main>

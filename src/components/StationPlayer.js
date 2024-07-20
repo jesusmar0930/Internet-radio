@@ -36,15 +36,16 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
         }
       };
 
-      playAudio();
-    }
+      const timeoutId = setTimeout(playAudio, 100);
 
-    return () => {
-      if (audioElement) {
-        audioElement.pause();
-        audioElement.src = '';
-      }
-    };
+      return () => {
+        clearTimeout(timeoutId);
+        if (audioElement) {
+          audioElement.pause();
+          audioElement.src = '';
+        }
+      };
+    }
   }, [station, isPlaying, setIsPlaying]);
 
   const togglePlay = () => {
@@ -104,21 +105,13 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
       </div>
       <p className="play-status">{isPlaying ? 'Now Playing' : 'Paused'}</p>
       <div className="favorite-buttons">
-  <button 
-    onClick={handleAddToFavorites} 
-    disabled={isFavorite}
-    className="add-favorite"
-  >
-    Add to Favorites
-  </button>
-  <button 
-    onClick={handleRemoveFromFavorites} 
-    disabled={!isFavorite}
-    className="remove-favorite"
-  >
-    Remove from Favorites
-  </button>
-</div>
+        <button onClick={handleAddToFavorites} disabled={isFavorite}>
+          Add to Favorites
+        </button>
+        <button onClick={handleRemoveFromFavorites} disabled={!isFavorite}>
+          Remove from Favorites
+        </button>
+      </div>
     </div>
   );
 }
