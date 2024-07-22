@@ -1,18 +1,31 @@
 // StationPlayer.js
 import React, { useState, useRef, useEffect } from 'react';
 
-function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, removeFromFavorites, isFavorite, onNextStation, onPreviousStation }) {
+function StationPlayer({ 
+  station, 
+  isPlaying, 
+  setIsPlaying, 
+  addToFavorites, 
+  removeFromFavorites, 
+  isFavorite, 
+  onNextStation, 
+  onPreviousStation,
+  volume,
+  setVolume
+}) {
   const audioRef = useRef(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [volume, setVolume] = useState(1);
   const [error, setError] = useState(null);
 
+  // Effect for volume changes
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      audioElement.volume = volume;
     }
   }, [volume]);
 
+  // Effect for station changes and play/pause
   useEffect(() => {
     const audioElement = audioRef.current;
     if (audioElement) {
@@ -40,10 +53,8 @@ function StationPlayer({ station, isPlaying, setIsPlaying, addToFavorites, remov
 
       return () => {
         clearTimeout(timeoutId);
-        if (audioElement) {
-          audioElement.pause();
-          audioElement.src = '';
-        }
+        audioElement.pause();
+        audioElement.src = '';
       };
     }
   }, [station, isPlaying, setIsPlaying]);

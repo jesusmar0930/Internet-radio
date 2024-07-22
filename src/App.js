@@ -8,7 +8,7 @@ import PopularStations from './components/PopularStations';
 import SearchBar from './components/SearchBar';
 import './App.css';
 
-const API_BASE = 'https://de1.api.radio-browser.info/json';
+const API_BASE = process.env.REACT_APP_API_BASE || 'https://de1.api.radio-browser.info/json';
 
 function App() {
   const [station, setStation] = useState(null);
@@ -24,6 +24,8 @@ function App() {
   const [genre, setGenre] = useState('');
   const [stationList, setStationList] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [playingFromFavorites, setPlayingFromFavorites] = useState(false);
+  const [volume, setVolume] = useState(1);
 
   const filterPlayableStations = useCallback((stations) => {
     return stations.filter(station => 
@@ -67,6 +69,7 @@ function App() {
     setStation(selectedStation);
     setCurrentStationId(selectedStation.stationuuid);
     setIsPlaying(true);
+    setPlayingFromFavorites(false);
   }, []);
 
   const addToFavorites = useCallback((stationToAdd) => {
@@ -100,32 +103,49 @@ function App() {
   }, [favorites]);
 
   const moveToNextStation = useCallback(() => {
-    if (stationList.length > 0) {
+    if (playingFromFavorites || (stationList.length === 0 && favorites.length > 0)) {
+      const currentIndex = favorites.findIndex(fav => fav.stationuuid === station.stationuuid);
+      const nextIndex = (currentIndex + 1) % favorites.length;
+      const nextStation = favorites[nextIndex];
+      setStation(nextStation);
+      setCurrentStationId(nextStation.stationuuid);
+      setPlayingFromFavorites(true);
+    } else if (stationList.length > 0) {
       const nextIndex = (currentStationIndex + 1) % stationList.length;
       setCurrentStationIndex(nextIndex);
       const nextStation = stationList[nextIndex];
       setStation(nextStation);
       setCurrentStationId(nextStation.stationuuid);
-      setIsPlaying(false);
-      setTimeout(() => setIsPlaying(true), 100);
+      setPlayingFromFavorites(false);
     }
-  }, [currentStationIndex, stationList]);
+    setIsPlaying(false);
+    setTimeout(() => setIsPlaying(true), 100);
+  }, [currentStationIndex, stationList, favorites, station, playingFromFavorites]);
   
   const moveToPreviousStation = useCallback(() => {
-    if (stationList.length > 0) {
+    if (playingFromFavorites || (stationList.length === 0 && favorites.length > 0)) {
+      const currentIndex = favorites.findIndex(fav => fav.stationuuid === station.stationuuid);
+      const previousIndex = (currentIndex - 1 + favorites.length) % favorites.length;
+      const previousStation = favorites[previousIndex];
+      setStation(previousStation);
+      setCurrentStationId(previousStation.stationuuid);
+      setPlayingFromFavorites(true);
+    } else if (stationList.length > 0) {
       const previousIndex = (currentStationIndex - 1 + stationList.length) % stationList.length;
       setCurrentStationIndex(previousIndex);
       const previousStation = stationList[previousIndex];
       setStation(previousStation);
       setCurrentStationId(previousStation.stationuuid);
-      setIsPlaying(false);
-      setTimeout(() => setIsPlaying(true), 100);
+      setPlayingFromFavorites(false);
     }
-  }, [currentStationIndex, stationList]);
+    setIsPlaying(false);
+    setTimeout(() => setIsPlaying(true), 100);
+  }, [currentStationIndex, stationList, favorites, station, playingFromFavorites]);
 
   const playFavorite = (favoriteStation) => {
     setStation(favoriteStation);
     setIsPlaying(true);
+    setPlayingFromFavorites(true);
   };
 
   const handleSearch = useCallback(async (searchTerm) => {
@@ -175,6 +195,8 @@ function App() {
                 isFavorite={isFavorite(station)}
                 onNextStation={moveToNextStation}
                 onPreviousStation={moveToPreviousStation}
+                volume={volume}
+                setVolume={setVolume}
               />
             )}
           </div>
