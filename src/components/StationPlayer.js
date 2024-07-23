@@ -1,5 +1,5 @@
 // StationPlayer.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 function StationPlayer({ 
   station, 
@@ -17,7 +17,28 @@ function StationPlayer({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Effect for volume changes
+  const playAudio = useCallback(async () => {
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+
+    try {
+      if (isPlaying) {
+        setIsLoading(true);
+        await audioElement.play();
+      } else {
+        audioElement.pause();
+      }
+    } catch (e) {
+      console.error("Error playing audio:", e);
+      if (e.name !== 'AbortError') {
+        setError("Unable to play this station. Please try another.");
+        setIsPlaying(false);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isPlaying, setIsPlaying]);
+
   useEffect(() => {
     const audioElement = audioRef.current;
     if (audioElement) {
@@ -25,29 +46,12 @@ function StationPlayer({
     }
   }, [volume]);
 
-  // Effect for station changes and play/pause
   useEffect(() => {
     const audioElement = audioRef.current;
     if (audioElement) {
       audioElement.src = station.url_resolved;
       setIsLoading(true);
       setError(null);
-
-      const playAudio = async () => {
-        try {
-          if (isPlaying) {
-            await audioElement.play();
-          } else {
-            audioElement.pause();
-          }
-        } catch (e) {
-          console.error("Error playing audio:", e);
-          setError("Unable to play this station. Please try another.");
-          setIsPlaying(false);
-        } finally {
-          setIsLoading(false);
-        }
-      };
 
       const timeoutId = setTimeout(playAudio, 100);
 
@@ -57,7 +61,11 @@ function StationPlayer({
         audioElement.src = '';
       };
     }
-  }, [station, isPlaying, setIsPlaying]);
+  }, [station, playAudio]);
+
+  useEffect(() => {
+    playAudio();
+  }, [isPlaying, playAudio]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
